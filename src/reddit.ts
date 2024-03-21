@@ -51,8 +51,8 @@ export async function getPostBodyText(postURL: string): Promise<Array<string>> {
 
 export function expandTextForSpeaking(text: string): string {
 	return `${text
-		.replace(/AITAH?/ig, "Am I the asshole")
-		.replace(/WIBTAH?/ig, "Would I be the asshole")}.`;
+		.replace(/AITAH?/gi, "Am I the asshole")
+		.replace(/WIBTAH?/gi, "Would I be the asshole")}.`;
 }
 
 function unescapeHtml(safe: string) {
@@ -61,7 +61,7 @@ function unescapeHtml(safe: string) {
 		.replace(/&lt;/g, "<")
 		.replace(/&gt;/g, ">")
 		.replace(/&quot;/g, '"')
-		.replace(/&#x200B;/g, ' ')
+		.replace(/&#x200B;/g, " ")
 		.replace(/&#(\d+);/gi, (_, numStr) => {
 			const num = Number.parseInt(numStr, 10);
 			return String.fromCharCode(num);

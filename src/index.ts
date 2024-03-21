@@ -16,7 +16,7 @@ Bun.$.throws(true);
 
 const PROJECTS_DIR = "../projects";
 const FINISHED_DIR = "../finished";
-const baseArgs = '-loglevel warning -hide_banner -y'.split(' ')
+const baseArgs = "-loglevel warning -hide_banner -y".split(" ");
 
 const finishedDir = join(__dirname, FINISHED_DIR);
 
@@ -66,7 +66,7 @@ for (let i = 0; i < postBody.length; i++) {
 	);
 	const image = getImage(text).then((image) => Bun.write(imageFile, image));
 	await Promise.all([audio, image]);
-	console.log(`merging audio and video #${i+1}/${postBody.length}`);
+	console.log(`merging audio and video #${i + 1}/${postBody.length}`);
 	const combinedAudioAndVideo = join(projDir, `combined_${i}.mkv`);
 	await Bun.$`ffmpeg ${baseArgs} -i ${imageFile} -i ${audioFile} -acodec libmp3lame -filter:a "atempo=1.5" -vcodec ffv1 -level 1 -coder 1 -context 1 -g 1 ${combinedAudioAndVideo}`.quiet();
 	combinedBits.push(combinedAudioAndVideo);
@@ -94,6 +94,7 @@ const bgVideoLength = await videoLength(bgVideoPath);
 const startRange = bgVideoLength - combinedLength;
 const start = Math.round(startRange < 1 ? 0 : Math.random() * (startRange - 1));
 const croppedBGVideo = join(projDir, "bg_crop.mp4");
+console.log("cropping bg video...");
 await Bun.$`ffmpeg ${baseArgs} -i ${bgVideoPath} -ss ${start} -t ${combinedLength} -vf "scale=-1:1920,crop=1080:1920" ${croppedBGVideo}`;
 console.log("wrote cropped bg video");
 
