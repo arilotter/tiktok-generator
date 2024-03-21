@@ -103,6 +103,7 @@ const croppedBGVideo = join(projDir, "bg_crop.mp4");
 console.log("cropping bg video...");
 await Bun.$`ffmpeg ${baseArgs} -i ${bgVideoPath} -ss ${start} -t ${combinedLength} -vf "scale=-1:1920,crop=1080:1920" ${croppedBGVideo}`;
 console.log("wrote cropped bg video");
+console.log("compositing final video...");
 
 const finishedFile = join(finishedDir, `${projectName}.mp4`);
 
