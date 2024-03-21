@@ -2,6 +2,7 @@
 
 Rips a reddit "am i the asshole" story from the frontpage and a random youtube video of minecraft parkour,
 overlays em with TTS, render out.
+Sample output: https://www.youtube.com/watch?v=OILpowaNxJM
 
 To install dependencies:
 
