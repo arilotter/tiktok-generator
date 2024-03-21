@@ -97,7 +97,5 @@ const finishedFile = join(finishedDir, `${projectName}.mp4`);
 
 await Bun.$`ffmpeg -i ${croppedBGVideo} -i ${allClips} -filter_complex "[0:v][1:v]overlay;[0:a][1:a]amix" ${finishedFile}`;
 
-// const audio = await getSpeech("test speech goes here!");
-// const audioPath = join(projDir, "audio.wav");
-// Bun.write(audioPath, audio);
-// console.log("wrote audio");
+
+console.log("Done with project! Output file at", finishedFile)
