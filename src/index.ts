@@ -97,5 +97,4 @@ const finishedFile = join(finishedDir, `${projectName}.mp4`);
 
 await Bun.$`ffmpeg -i ${croppedBGVideo} -i ${allClips} -filter_complex "[0:v][1:v]overlay;[0:a][1:a]amix" ${finishedFile}`;
 
-
-console.log("Done with project! Output file at", finishedFile)
+console.log("Done with project! Output file at", finishedFile);

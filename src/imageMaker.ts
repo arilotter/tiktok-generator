@@ -1,18 +1,19 @@
 import { GlobalFonts, type SKRSContext2D, createCanvas } from "@napi-rs/canvas";
 
 GlobalFonts.registerFromPath(
-	require("@canvas-fonts/helveticaneue"),
-	"HelveticaNeue",
+	require("@canvas-fonts/comic-sans-ms"),
+	"Comic Sans MS",
 );
 
 const width = 1080;
 const height = 1920;
 const padding = 64;
+const topOffset = 300;
 const fontSize = 48;
 export function getImage(text: string) {
 	const canvas = createCanvas(width, height);
 	const ctx = canvas.getContext("2d");
-	ctx.font = `${fontSize}px HelveticaNeue`;
+	ctx.font = `${fontSize}px Comic Sans MS`;
 	ctx.textAlign = "center";
 	const writtenHeight = wrapText(
 		ctx,
@@ -28,15 +29,15 @@ export function getImage(text: string) {
 	ctx.strokeStyle = "#DC493A";
 	ctx.fillRect(
 		padding,
-		padding,
+		topOffset + padding,
 		width - padding * 2,
-		writtenHeight + padding * 2,
+		topOffset + writtenHeight + padding * 2,
 	);
 	ctx.strokeRect(
 		padding,
-		padding,
+		topOffset + padding,
 		width - padding * 2,
-		writtenHeight + padding * 2,
+		topOffset + writtenHeight + padding * 2,
 	);
 
 	ctx.fillStyle = "#1b1b1b";
@@ -44,7 +45,7 @@ export function getImage(text: string) {
 		ctx,
 		text,
 		width / 2,
-		padding * 2,
+		topOffset + padding * 2,
 		width - padding * 3,
 		fontSize * 1.5,
 	);

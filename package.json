@@ -14,7 +14,7 @@
 		"fixx": "biome check --apply-unsafe ./"
 	},
 	"dependencies": {
-		"@canvas-fonts/helveticaneue": "^1.0.4",
+		"@canvas-fonts/comic-sans-ms": "^1.0.4",
 		"@gradio/client": "^0.14.0",
 		"@napi-rs/canvas": "^0.1.51",
 		"eventsource": "^2.0.2",
