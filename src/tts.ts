@@ -24,10 +24,8 @@ export async function getSpeech(
 	) {
 		throw new Error(`Failed to synth text ${text}:\n${JSON.stringify(result)}`);
 	}
-	console.log("downloading audio...");
 	const audioPath = result.data[0].path;
 	const audioReq = await fetch(`${API_URL}/file=${audioPath}`);
 	const audio = await audioReq.arrayBuffer();
-	console.log("done!");
 	return audio;
 }
