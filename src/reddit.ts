@@ -61,6 +61,7 @@ function unescapeHtml(safe: string) {
 		.replace(/&lt;/g, "<")
 		.replace(/&gt;/g, ">")
 		.replace(/&quot;/g, '"')
+		.replace(/&#x200B;/g, ' ')
 		.replace(/&#(\d+);/gi, (_, numStr) => {
 			const num = Number.parseInt(numStr, 10);
 			return String.fromCharCode(num);
