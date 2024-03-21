@@ -60,7 +60,7 @@ export function getImage(
 		topOffset + writtenHeight,
 	);
 
-	ctx.fillStyle = textColor;
+	ctx.fillStyle = "#efefef";
 	wrapText(
 		ctx,
 		text,
