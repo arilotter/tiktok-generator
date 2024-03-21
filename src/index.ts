@@ -16,6 +16,8 @@ Bun.$.throws(true);
 
 const PROJECTS_DIR = "../projects";
 const FINISHED_DIR = "../finished";
+const baseArgs = '-loglevel warning -hide_banner -y'.split(' ')
+
 const finishedDir = join(__dirname, FINISHED_DIR);
 
 await mkdir(finishedDir, {
@@ -64,11 +66,10 @@ for (let i = 0; i < postBody.length; i++) {
 	);
 	const image = getImage(text).then((image) => Bun.write(imageFile, image));
 	await Promise.all([audio, image]);
-	console.log(`merging audio and video #${i}/${postBody.length - 1}`);
+	console.log(`merging audio and video #${i+1}/${postBody.length}`);
 	const combinedAudioAndVideo = join(projDir, `combined_${i}.mkv`);
-	await Bun.$`ffmpeg -y -i ${imageFile} -i ${audioFile} -acodec libmp3lame -filter:a "atempo=1.5" -vcodec ffv1 -level 1 -coder 1 -context 1 -g 1 ${combinedAudioAndVideo}`;
+	await Bun.$`ffmpeg ${baseArgs} -i ${imageFile} -i ${audioFile} -acodec libmp3lame -filter:a "atempo=1.5" -vcodec ffv1 -level 1 -coder 1 -context 1 -g 1 ${combinedAudioAndVideo}`.quiet();
 	combinedBits.push(combinedAudioAndVideo);
-	console.log(`DONE merging audio and video #${i}/${postBody.length - 1}`);
 	console.log("---");
 }
 
@@ -83,7 +84,7 @@ const comboTxt = join(projDir, "combo.txt");
 const allClips = join(projDir, "allClips.mkv");
 console.log("combining all clips");
 await Bun.write(comboTxt, combinedBits.map((c) => `file ${c}`).join("\n"));
-await Bun.$`ffmpeg -y -f concat -safe 0 -i ${comboTxt} -c copy ${allClips}`.quiet();
+await Bun.$`ffmpeg ${baseArgs} -f concat -safe 0 -i ${comboTxt} -c copy ${allClips}`.quiet();
 
 console.log("combined, getting length of combined");
 const combinedLength = await videoLength(allClips);
@@ -93,12 +94,12 @@ const bgVideoLength = await videoLength(bgVideoPath);
 const startRange = bgVideoLength - combinedLength;
 const start = Math.round(startRange < 1 ? 0 : Math.random() * (startRange - 1));
 const croppedBGVideo = join(projDir, "bg_crop.mp4");
-await Bun.$`ffmpeg -y -i ${bgVideoPath} -ss ${start} -t ${combinedLength} -vf "scale='if(gt(iw,ih),1920,-1)':'if(gt(iw,ih),-1,1920)',crop=1080:1920" ${croppedBGVideo}`;
+await Bun.$`ffmpeg ${baseArgs} -i ${bgVideoPath} -ss ${start} -t ${combinedLength} -vf "scale='if(gt(iw,ih),1920,-1)':'if(gt(iw,ih),-1,1920)',crop=1080:1920" ${croppedBGVideo}`;
 console.log("wrote cropped bg video");
 
 const finishedFile = join(finishedDir, `${projectName}.mp4`);
 
-await Bun.$`ffmpeg -y -i ${croppedBGVideo} -i ${allClips} -filter_complex "[0:v][1:v]overlay;[0:a][1:a]amix" ${finishedFile}`;
+await Bun.$`ffmpeg ${baseArgs} -i ${croppedBGVideo} -i ${allClips} -filter_complex "[0:v][1:v]overlay;[0:a][1:a]amix" ${finishedFile}`;
 
 console.log("Done with project! Output file at", finishedFile);
 
