@@ -4,7 +4,7 @@ export async function getParkourVideo() {
 	const { items } = await GetListByKeyword(
 		"minecraft parkour tiktok format",
 		false,
-		20,
+		100,
 		[{ type: "video" }],
 	);
 
