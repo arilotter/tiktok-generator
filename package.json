@@ -9,6 +9,7 @@
 		"typescript": "^5.0.0"
 	},
 	"scripts": {
+		"start": "bun src/index.ts",
 		"lint": "biome check ./",
 		"fix": "biome check --apply ./",
 		"fixx": "biome check --apply-unsafe ./"
