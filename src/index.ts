@@ -94,7 +94,7 @@ const bgVideoLength = await videoLength(bgVideoPath);
 const startRange = bgVideoLength - combinedLength;
 const start = Math.round(startRange < 1 ? 0 : Math.random() * (startRange - 1));
 const croppedBGVideo = join(projDir, "bg_crop.mp4");
-await Bun.$`ffmpeg ${baseArgs} -i ${bgVideoPath} -ss ${start} -t ${combinedLength} -vf "scale='if(gt(iw,ih),1920,-1)':'if(gt(iw,ih),-1,1920)',crop=1080:1920" ${croppedBGVideo}`;
+await Bun.$`ffmpeg ${baseArgs} -i ${bgVideoPath} -ss ${start} -t ${combinedLength} -vf "scale=-1:1920,crop=1080:1920" ${croppedBGVideo}`;
 console.log("wrote cropped bg video");
 
 const finishedFile = join(finishedDir, `${projectName}.mp4`);
