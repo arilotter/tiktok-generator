@@ -1,5 +1,5 @@
 const frontpageRegex =
-	/<a class=".*?title.*?" data-event-action="title" href="(.*?)" tabindex="1"\s?>(.*?)<\/a>/gm;
+	/<a class=".*?title.*?" data-event-action="title" href="(.*?)".*?>(.*?)<\/a>/gm;
 
 const bodyTextRegex =
 	/<div class="expando expando-uninitialized".*?<div class="usertext-body.*" ><div class="md">((.|\n)*?)<\/div>/;
@@ -50,7 +50,9 @@ export async function getPostBodyText(postURL: string): Promise<Array<string>> {
 }
 
 export function expandTextForSpeaking(text: string): string {
-	return `${text.replaceAll("AITA", "Am I the asshole?")}.`;
+	return `${text
+		.replace(/AITAH?/ig, "Am I the asshole")
+		.replace(/WIBTAH?/ig, "Would I be the asshole")}.`;
 }
 
 function unescapeHtml(safe: string) {
