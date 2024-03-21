@@ -8,6 +8,7 @@ export async function getParkourVideo() {
 		[{ type: "video" }],
 	);
 
+	console.log(`${items.length} parkour vids to pick...`);
 	const randomVideo = items[~~(Math.random() * items.length)].id;
 
 	const url = `https://www.youtube.com/watch?v=${randomVideo}`;

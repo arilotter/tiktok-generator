@@ -3,7 +3,7 @@ import "./gradio-hacks";
 
 import { mkdir, readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { getImage } from "./imageMaker";
+import { getImage, getPalette } from "./imageMaker";
 import { getParkourVideo } from "./parkour";
 import {
 	expandTextForSpeaking,
@@ -57,6 +57,7 @@ const speaker = `${Math.random() > 0.5 ? "m" : "f"}-us-${
 	variants[~~(Math.random() * variants.length)]
 }` as const;
 
+const colors = getPalette();
 for (let i = 0; i < postBody.length; i++) {
 	const text = postBody[i];
 	const audioFile = join(projDir, `${i}.wav`);
@@ -64,7 +65,12 @@ for (let i = 0; i < postBody.length; i++) {
 	const audio = getSpeech(expandTextForSpeaking(text), speaker).then((speech) =>
 		Bun.write(audioFile, speech),
 	);
-	const image = getImage(text).then((image) => Bun.write(imageFile, image));
+	const image = getImage(
+		text,
+		colors.textColor,
+		colors.bgColor,
+		colors.bgBorder,
+	).then((image) => Bun.write(imageFile, image));
 	await Promise.all([audio, image]);
 	console.log(`merging audio and video #${i + 1}/${postBody.length}`);
 	const combinedAudioAndVideo = join(projDir, `combined_${i}.mkv`);

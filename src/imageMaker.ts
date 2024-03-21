@@ -1,5 +1,5 @@
 import { GlobalFonts, type SKRSContext2D, createCanvas } from "@napi-rs/canvas";
-
+import palettes from "nice-color-palettes";
 GlobalFonts.registerFromPath(
 	require("@canvas-fonts/comic-sans-ms"),
 	"Comic Sans MS",
@@ -9,8 +9,30 @@ const width = 1080;
 const height = 1920;
 const padding = 64;
 const topOffset = 300;
-const fontSize = 48;
-export function getImage(text: string) {
+const fontSize = 58;
+
+export function getPalette() {
+	const p = palettes[~~(Math.random() * palettes.length)]
+		.map(hex2rgb)
+		.sort((a, b) => brightness(...a) - brightness(...b));
+
+	const textColor = p[0];
+	const bgColor = p[p.length - 2];
+	const bgBorder = p[p.length - 1];
+
+	return {
+		textColor: `rgb(${textColor[0]}, ${textColor[1]}, ${textColor[2]})`,
+		bgColor: `rgba(${bgColor[0]}, ${bgColor[1]}, ${bgColor[2]}, 0.7)`,
+		bgBorder: `rgba(${bgBorder[0]}, ${bgBorder[1]}, ${bgBorder[2]}, 0.7)`,
+	};
+}
+
+export function getImage(
+	text: string,
+	textColor: string,
+	bgColor: string,
+	bgBorder: string,
+) {
 	const canvas = createCanvas(width, height);
 	const ctx = canvas.getContext("2d");
 	ctx.font = `${fontSize}px Comic Sans MS`;
@@ -18,29 +40,27 @@ export function getImage(text: string) {
 	const writtenHeight = measureWrapText(
 		ctx,
 		text,
-		width / 2,
-		topOffset + padding * 1.5,
 		width - padding * 3,
 		fontSize * 1.5,
 	);
 
 	ctx.lineWidth = 10;
-	ctx.fillStyle = "rgba(231, 240, 255, 0.7)";
-	ctx.strokeStyle = "rgba(220, 73, 58, 0.7)";
+	ctx.fillStyle = bgColor;
+	ctx.strokeStyle = bgBorder;
 	ctx.fillRect(
 		padding,
 		topOffset,
 		width - padding * 2,
-		topOffset + writtenHeight + padding,
+		topOffset + writtenHeight,
 	);
 	ctx.strokeRect(
 		padding,
 		topOffset,
 		width - padding * 2,
-		topOffset + writtenHeight + padding,
+		topOffset + writtenHeight,
 	);
 
-	ctx.fillStyle = "#1b1b1b";
+	ctx.fillStyle = textColor;
 	wrapText(
 		ctx,
 		text,
@@ -55,14 +75,12 @@ export function getImage(text: string) {
 function measureWrapText(
 	ctx: SKRSContext2D,
 	text: string,
-	x: number,
-	y: number,
 	maxWidth: number,
 	lineHeight: number,
 ): number {
 	const words = text.split(" ");
 	let line = "";
-	let yOff = y;
+	let yOff = 0;
 
 	for (let n = 0; n < words.length; n++) {
 		const testLine = `${line + words[n]} `;
@@ -75,7 +93,7 @@ function measureWrapText(
 			line = testLine;
 		}
 	}
-	return yOff - y;
+	return yOff;
 }
 
 function wrapText(
@@ -103,4 +121,16 @@ function wrapText(
 		}
 	}
 	ctx.fillText(line, x, yOff);
+}
+
+function hex2rgb(hex: string): [number, number, number] {
+	const nums = hex.replace("#", "").match(/.{1,2}/g);
+	if (!nums) {
+		throw new Error(`invalid hex color ${hex}`);
+	}
+	return nums.map((e) => Number.parseInt(e, 16)) as [number, number, number];
+}
+
+function brightness(r: number, g: number, b: number) {
+	return 0.2 * r + 0.7 * g + 0.1 * b;
 }
