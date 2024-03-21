@@ -44,7 +44,7 @@ export async function getPostBodyText(postURL: string): Promise<Array<string>> {
 		.replaceAll("<p>", "")
 		.replaceAll("</p>", "\n")
 		.replace(/<.*?>.*?<\/.*?>/g, "")
-		.split(".")
+		.split(/[\.\n]/)
 		.map((b) => b.trim())
 		.filter((b) => b.length);
 }
