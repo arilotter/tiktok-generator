@@ -20,6 +20,7 @@ const baseArgs = "-loglevel warning -hide_banner -y".split(" ");
 
 while (true) {
 	await main();
+	console.log("=================================");
 }
 
 async function main() {
